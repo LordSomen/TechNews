@@ -103,12 +103,13 @@ public class TabNewsFragment extends Fragment implements NewsArticleAdapter.News
     public void loadData() {
         final Call<ApiData> listCall = mApiInterface.getAllBakingData(mNewsSource,mNewsQuery,API_KEY);
         // now binding the data in the pojo class
+        mProgressBarEverything.setVisibility(View.VISIBLE);
+
         listCall.enqueue(new Callback<ApiData>() {
             //if data is successfully binded from json to the pojo class onResponse is called
             @Override
             public void onResponse(Call<ApiData> call,
                                    Response<ApiData> response) {
-
                 Log.d(TAG, "Response : " + response.code());
                 ApiData apiData = response.body();
                 if (null != apiData) {
