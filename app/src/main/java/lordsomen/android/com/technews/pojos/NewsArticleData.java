@@ -142,7 +142,6 @@ public class NewsArticleData implements Parcelable
     }
 
 
-
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(source);
         dest.writeValue(author);

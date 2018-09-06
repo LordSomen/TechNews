@@ -1,8 +1,8 @@
 package lordsomen.android.com.technews.activities;
 
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -10,43 +10,67 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
+import java.util.HashMap;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import lordsomen.android.com.technews.R;
 import lordsomen.android.com.technews.fragments.ChannelNewsFragment;
+import lordsomen.android.com.technews.fragments.FavNewsFragment;
 import lordsomen.android.com.technews.utils.DataSource;
 
 public class MainNewsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    public static final int CHANNEL = View.generateViewId();
+
+    private HashMap<String,Integer> mNewsChannelMap = new HashMap<>();
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+    @BindView(R.id.nav_view)
+    NavigationView mNavigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_news);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        ButterKnife.bind(this);
+        setSupportActionBar(mToolbar);
 
+        //Initializing DataSource class
+        DataSource dataSource = new DataSource();
+        //for creation of channels nav menu id map
+        createMap();
+        //creation of drawer layout
 
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+                this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        mNavigationView.setNavigationItemSelectedListener(this);
 
+//        addMenuItemInNavMenuDrawer();
         //this lines set the initial nav fragment
         setFragment(R.id.nav_techcrunch);
-        //this line initializes the datasource class
-        DataSource dataSource = new DataSource();
+
+    }
+
+    private void createMap() {
+        for(String item : DataSource.NEWS_CHANNEL_LIST){
+            mNewsChannelMap.put(item, View.generateViewId());
+        }
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
@@ -64,6 +88,7 @@ public class MainNewsActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -80,8 +105,7 @@ public class MainNewsActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         setFragment(id);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -90,6 +114,9 @@ public class MainNewsActivity extends AppCompatActivity
         switch (fragmentId){
             case R.id.nav_techcrunch :
                 fragment = new ChannelNewsFragment();
+                break;
+            case R.id.nav_favourite :
+                fragment = new FavNewsFragment();
                 break;
         }
         constructFragment(fragment);
@@ -101,5 +128,20 @@ public class MainNewsActivity extends AppCompatActivity
                 .commit();
     }
 
+    /**
+     * this method adds menu item in the nav drawer dynamically
+     */
+    private void addMenuItemInNavMenuDrawer() {
+
+        Menu menu = mNavigationView.getMenu();
+        Menu submenu = menu.addSubMenu(0,CHANNEL,0,"Channels");
+
+        List<String> newsChannels = DataSource.NEWS_CHANNEL_LIST;
+        for(int i = 0; i<newsChannels.size();i++){
+            String item = newsChannels.get(i);
+            submenu.add(CHANNEL,mNewsChannelMap.get(item),i,item);
+        }
+        mNavigationView.invalidate();
+    }
 
 }
