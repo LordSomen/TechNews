@@ -53,7 +53,6 @@ public class NewsContentProvider extends ContentProvider {
             final Cursor cursor;
 
             cursor = newsAppDao.selectAllCursor();
-            cursor.setNotificationUri(context.getContentResolver(), uri);
             return cursor;
         } else {
             throw new IllegalArgumentException("Unknown URI: " + uri);

@@ -1,5 +1,6 @@
 package lordsomen.android.com.technews.database;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
@@ -17,12 +18,11 @@ public interface NewsAppDao {
     @Update
     public void update(NewsAppData newsData);
 
-
     @Query("SELECT * FROM news_fav_data")
     Cursor selectAllCursor();
 
     @Query("SELECT * FROM news_fav_data")
-    List<NewsAppData> selectAllList();
+    LiveData<List<NewsAppData>> selectAllList();
 
     @Query("SELECT * FROM news_fav_data WHERE id =:id")
     Cursor selectById(int id);

@@ -1,17 +1,15 @@
 package lordsomen.android.com.technews.fragments;
 
-import android.annotation.SuppressLint;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
-import android.support.v4.util.ArraySet;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,11 +30,12 @@ import butterknife.ButterKnife;
 import lordsomen.android.com.technews.R;
 import lordsomen.android.com.technews.adapters.NewsArticleAdapter;
 import lordsomen.android.com.technews.database.NewsAppData;
-import lordsomen.android.com.technews.database.NewsAppDatabase;
 import lordsomen.android.com.technews.pojos.NewsArticleData;
+import lordsomen.android.com.technews.utils.MainViewModel;
 
-public class FavNewsFragment extends Fragment implements NewsArticleAdapter.NewsOnClickItemHandler,
-        LoaderManager.LoaderCallbacks<List<NewsAppData>> {
+import static android.support.constraint.Constraints.TAG;
+
+public class FavNewsFragment extends Fragment implements NewsArticleAdapter.NewsOnClickItemHandler{
 
     private static final int NEWS_DATA_LOADER = 2400;
 
@@ -71,82 +70,49 @@ public class FavNewsFragment extends Fragment implements NewsArticleAdapter.News
         mNewsArticleAdapter = new NewsArticleAdapter(getActivity().getApplicationContext(), this);
         mRecyclerViewFav.setLayoutManager(linearLayoutManager);
         mRecyclerViewFav.setAdapter(mNewsArticleAdapter);
-        loadData();
+//        loadData();
+        setupViewModel();
+
         mRelaodEverything.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadData();
+//                loadData();
+                setupViewModel();
             }
         });
         return view;
     }
 
-    private void loadData() {
+    private void setupViewModel() {
+
         mProgressBarFav.setVisibility(View.VISIBLE);
-        mNewsArticleDataList = new ArrayList<>();
 
-        Bundle bundle = new Bundle();
-        LoaderManager loaderManager = getLoaderManager();
-        Loader<ArraySet<NewsAppData>> loader = loaderManager.getLoader(NEWS_DATA_LOADER);
-        if (loader == null) {
-            loaderManager.initLoader(NEWS_DATA_LOADER, bundle, this);
-        } else {
-            loaderManager.restartLoader(NEWS_DATA_LOADER, bundle, this);
-        }
-
+        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel.getmNewsList().observe(this, new Observer<List<NewsAppData>>() {
+            @Override
+            public void onChanged(@Nullable List<NewsAppData> newsAppData) {
+                Log.d(TAG, "Updating list of tasks from LiveData in ViewModel");
+                if (null != newsAppData && newsAppData.size() != 0) {
+                    mNewsArticleDataList = new ArrayList<>();
+                    for (NewsAppData newsData : newsAppData) {
+                        String news = newsData.getNewsArticleDataString();
+                        mNewsArticleDataList.add(convertToArticle(news));
+                    }
+                    if (mNewsArticleDataList != null) {
+                        showNewsEverythingList();
+                        mNewsArticleAdapter.setNewsArticleData(mNewsArticleDataList);
+                    }
+                } else {
+                    showErrorEverything();
+                }
+            }
+        });
     }
 
 
 
     @Override
     public void onClickItem(NewsArticleData newsArticleData) {
-
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    @Override
-    public Loader<List<NewsAppData>> onCreateLoader(int id, final Bundle args) {
-        return new AsyncTaskLoader<List<NewsAppData>>(getActivity().getApplicationContext()) {
-            @Override
-            protected void onStartLoading() {
-                super.onStartLoading();
-                mProgressBarFav.setVisibility(View.VISIBLE);
-                if (args == null) {
-                    return;
-                } else {
-                    forceLoad();
-                }
-            }
-
-            @Override
-            public List<NewsAppData> loadInBackground() {
-                final NewsAppDatabase newsAppDatabase = NewsAppDatabase.getDataInstance(getActivity()
-                        .getApplicationContext());
-                return newsAppDatabase.NewsAppDao().selectAllList();
-            }
-        };
-    }
-
-    @Override
-    public void onLoadFinished(Loader<List<NewsAppData>> loader, List<NewsAppData> data) {
-        mProgressBarFav.setVisibility(View.GONE);
-        if(null != data && data.size() != 0){
-            mNewsArticleDataList = new ArrayList<>();
-            for(NewsAppData newsAppData : data){
-                    String news = newsAppData.getNewsArticleDataString();
-                    mNewsArticleDataList.add(convertToArticle(news));
-                }
-                if(mNewsArticleDataList != null){
-                    showNewsEverythingList();
-                    mNewsArticleAdapter.setNewsArticleData(mNewsArticleDataList);
-                }
-        }else {
-            showErrorEverything();
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<List<NewsAppData>> loader) {
 
     }
 
