@@ -114,7 +114,7 @@ public class NewsRemoteViewsFactory implements RemoteViewsService.RemoteViewsFac
                     .load(newsArticleData.getUrlToImage())
                     .centerCrop()
                     .placeholder(R.drawable.placeholder)
-                    .submit(100, 90)
+                    .submit(720, 720)
                     .get();
 
             rv.setImageViewBitmap(R.id.imageView_widget_item, bitmap);
