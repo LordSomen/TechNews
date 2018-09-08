@@ -12,7 +12,9 @@ import lordsomen.android.com.technews.utils.DataSource;
 /**
  * this adapter is for the scrollable list of tab views !!
  */
+
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
+
     private final List<String> mSourceList = DataSource.NEWS_CHANNEL_LIST;
     private final List<String> mKeywordQueryList = DataSource.NEWS_QUERY_LIST;
 
@@ -35,4 +37,5 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
         return mKeywordQueryList.get(position);
     }
+
 }

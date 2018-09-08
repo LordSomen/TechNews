@@ -21,6 +21,7 @@ import lordsomen.android.com.technews.R;
 import lordsomen.android.com.technews.fragments.ChannelNewsFragment;
 import lordsomen.android.com.technews.fragments.FavNewsFragment;
 import lordsomen.android.com.technews.utils.DataSource;
+import lordsomen.android.com.technews.widget.NewsAppWidget;
 
 public class MainNewsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -58,7 +59,7 @@ public class MainNewsActivity extends AppCompatActivity
 //        addMenuItemInNavMenuDrawer();
         //this lines set the initial nav fragment
         setFragment(R.id.nav_techcrunch);
-
+        NewsAppWidget.sendRefreshBroadcast(getApplicationContext());
     }
 
     private void createMap() {

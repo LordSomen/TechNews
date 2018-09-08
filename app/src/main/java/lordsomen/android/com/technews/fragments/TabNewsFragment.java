@@ -32,7 +32,7 @@ import retrofit2.Response;
 
 import static android.support.constraint.Constraints.TAG;
 
-public class TabNewsFragment extends Fragment implements NewsArticleAdapter.NewsOnClickItemHandler{
+public class TabNewsFragment extends Fragment implements NewsArticleAdapter.NewsOnClickItemHandler {
 
     public static  final String QUERY = "query" ;
     public static final String SOURCE = "source";
@@ -101,7 +101,7 @@ public class TabNewsFragment extends Fragment implements NewsArticleAdapter.News
     }
 
     public void loadData() {
-        final Call<ApiData> listCall = mApiInterface.getAllBakingData(mNewsSource,mNewsQuery,API_KEY);
+        final Call<ApiData> listCall = mApiInterface.getAllChannelData(mNewsSource,mNewsQuery,API_KEY);
         // now binding the data in the pojo class
         mProgressBarEverything.setVisibility(View.VISIBLE);
 
@@ -141,7 +141,6 @@ public class TabNewsFragment extends Fragment implements NewsArticleAdapter.News
         mErrorLayoutEverything.setVisibility(View.VISIBLE);
     }
 
-
     private void showNewsEverythingList() {
         mRecyclerViewEverything.setVisibility(View.VISIBLE);
         mProgressBarEverything.setVisibility(View.GONE);
@@ -150,6 +149,8 @@ public class TabNewsFragment extends Fragment implements NewsArticleAdapter.News
 
     @Override
     public void onClickItem(NewsArticleData newsArticleData) {
-        Toast.makeText(getActivity().getApplicationContext(), "Clicked", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity().getApplicationContext(), "Clicked", Toast.LENGTH_SHORT)
+                .show();
     }
+
 }

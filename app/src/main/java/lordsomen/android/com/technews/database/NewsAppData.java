@@ -7,7 +7,7 @@ import android.arch.persistence.room.PrimaryKey;
 public class NewsAppData {
 
     public static final String TABLE_NAME = "news_app_data";
-    public static final String COLUMN_NEWS_ARTICLE_DATA = "news_article_data";
+    public static final String COLUMN_NEWS_ARTICLE_DATA = "newsArticleDataString";
     public static final String COLUMN_ID_ = "id";
 
     @PrimaryKey

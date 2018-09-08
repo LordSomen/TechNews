@@ -14,7 +14,11 @@ public interface ApiInterface {
 
 
     @GET("everything")
-    Call<ApiData> getAllBakingData(@Query("sources") String source , @Query("q") String query
+    Call<ApiData> getAllChannelData(@Query("sources") String source , @Query("q") String query
             ,@Query("apiKey") String apiKey);
+
+    @GET("top-headlines")
+    Call<ApiData> getAllTopHeadlinesDataWidget(@Query("sources") String source
+            , @Query("apiKey") String apiKey);
 
 }
