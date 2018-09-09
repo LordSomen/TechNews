@@ -1,5 +1,6 @@
 package lordsomen.android.com.technews.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,13 +15,13 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import lordsomen.android.com.technews.R;
+import lordsomen.android.com.technews.activities.NewsDetailsActivity;
 import lordsomen.android.com.technews.adapters.NewsArticleAdapter;
 import lordsomen.android.com.technews.network.ApiClient;
 import lordsomen.android.com.technews.network.ApiInterface;
@@ -37,6 +38,7 @@ public class TabNewsFragment extends Fragment implements NewsArticleAdapter.News
     public static  final String QUERY = "query" ;
     public static final String SOURCE = "source";
     public static final String API_KEY = "b5d42bd3009c4988bc08b6d78854717f";
+    public static final String NEWS_ARTICLE_DATA = "newsArticleIntentData";
 
     private ApiInterface mApiInterface;
     private String mNewsQuery;
@@ -149,8 +151,12 @@ public class TabNewsFragment extends Fragment implements NewsArticleAdapter.News
 
     @Override
     public void onClickItem(NewsArticleData newsArticleData) {
-        Toast.makeText(getActivity().getApplicationContext(), "Clicked", Toast.LENGTH_SHORT)
-                .show();
+        Intent newsIntent = new Intent(getActivity().getApplicationContext(),
+                NewsDetailsActivity.class);
+        Bundle mBundle = new Bundle();
+        mBundle.putParcelable(NEWS_ARTICLE_DATA, newsArticleData);
+        newsIntent.putExtras(mBundle);
+        startActivity(newsIntent);
     }
 
 }

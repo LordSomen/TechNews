@@ -33,14 +33,18 @@
                 android:resource="@xml/news_app_widget_info" />
         </receiver>
 
-        <service android:name=".widget.NewsRemoteViewsService"
+        <service
+            android:name=".widget.NewsRemoteViewsService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <provider
-            android:name="lordsomen.android.com.technews.database.NewsContentProvider"
+            android:name=".database.NewsContentProvider"
             android:authorities="lordsomen.android.com.technews.database"
             android:exported="true" />
 
+        <activity android:name=".activities.NewsDetailsActivity" />
+        <activity android:name=".activities.SignUpActivity" />
+        <activity android:name=".activities.LoginActivity"></activity>
     </application>
 
 </manifest>
