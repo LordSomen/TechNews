@@ -37,7 +37,6 @@ import static android.support.constraint.Constraints.TAG;
 
 public class FavNewsFragment extends Fragment implements NewsArticleAdapter.NewsOnClickItemHandler{
 
-    private static final int NEWS_DATA_LOADER = 2400;
 
     private NewsArticleAdapter mNewsArticleAdapter;
     private List<NewsArticleData> mNewsArticleDataList;

@@ -15,17 +15,18 @@ import lordsomen.android.com.technews.utils.DataSource;
 
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
-    private final List<String> mSourceList = DataSource.NEWS_CHANNEL_LIST;
     private final List<String> mKeywordQueryList = DataSource.NEWS_QUERY_LIST;
+    private String mNewsSource;
 
-    public ViewPagerAdapter(FragmentManager manager) {
+    public ViewPagerAdapter(FragmentManager manager,String source) {
         super(manager);
+        mNewsSource = source;
         notifyDataSetChanged();
     }
 
     @Override
     public Fragment getItem(int position) {
-        return TabNewsFragment.init("techcrunch",mKeywordQueryList.get(position));
+        return TabNewsFragment.init(mNewsSource,mKeywordQueryList.get(position));
     }
 
     @Override

@@ -26,14 +26,32 @@ public class ChannelNewsFragment extends Fragment {
 
 
     private Context mContext;
+    public static final String SOURCE = "source";
+
     @BindView(R.id.channel_frag_tabs)
     TabLayout mTabLayout;
     @BindView(R.id.channel_frag_viewpager)
     ViewPager mViewPager;
+    private String mNewsSource;
+
+    public static ChannelNewsFragment init(String source) {
+        ChannelNewsFragment channelNewsFragment = new ChannelNewsFragment();
+
+        Bundle args = new Bundle();
+
+        args.putString(SOURCE,source);
+        channelNewsFragment.setArguments(args);
+
+        return channelNewsFragment;
+        
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(null != getArguments()) {
+            mNewsSource = getArguments().getString(SOURCE);
+        }        
     }
 
     @Nullable
@@ -51,7 +69,8 @@ public class ChannelNewsFragment extends Fragment {
      * this method is for setting up the view pager !!
      */
     private void setupViewPager() {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager()
+                ,mNewsSource);
         mViewPager.setAdapter(adapter);
     }
 

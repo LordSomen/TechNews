@@ -6,17 +6,9 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:id="@+id/nav_favourite"
+            android:title="Bookmarks"
+            android:icon="@drawable/ic_nav_bookmark"/>
 
     </group>
 
@@ -24,11 +16,63 @@
         <menu>
             <!--nav item for channel TechCrunch-->
             <item
+                android:id="@+id/nav_google-news"
+                android:title="Google-news" />
+            <item
                 android:id="@+id/nav_techcrunch"
                 android:title="TechCrunch" />
             <item
-                android:id="@+id/nav_favourite"
-                android:title="Bookmarks" />
+                android:id="@+id/nav_cnet"
+                android:title="CNet" />
+            <item
+                android:id="@+id/nav_ars-technica"
+                android:title="Ars-Technica" />
+            <item
+                android:id="@+id/nav_bbc-news"
+                android:title="Bbc-News" />
+            <item
+                android:id="@+id/nav_wired"
+                android:title="Wired" />
+            <item
+                android:id="@+id/nav_cnn"
+                android:title="Cnn" />
+            <item
+                android:id="@+id/nav_engadget"
+                android:title="Engadget" />
+            <item
+                android:id="@+id/nav_mashable"
+                android:title="Mashable" />
+            <item
+                android:id="@+id/nav_the-next-web"
+                android:title="The-Next-Web" />
+            <item
+                android:id="@+id/nav_the-verge"
+                android:title="The-Verge" />
+            <item
+                android:id="@+id/nav_bloomberg"
+                android:title="Bloomberg" />
+            <item
+                android:id="@+id/nav_hacker-news"
+                android:title="Hacker-News" />
+            <item
+                android:id="@+id/nav_reddit-r-all"
+                android:title="Reddit" />
+            <item
+                android:id="@+id/nav_crypto-coin-news"
+                android:title="Crypto-Coin-News" />
+            <item
+                android:id="@+id/nav_recode"
+                android:title="Recode" />
+            <item
+                android:id="@+id/nav_techrader"
+                android:title="Techrader" />
+            <item
+                android:id="@+id/nav_new-scientist"
+                android:title="New-Scientist" />
+            <item
+                android:id="@+id/nav_vice-news"
+                android:title="Vice-News" />
+
         </menu>
     </item>
 

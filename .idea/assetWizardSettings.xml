@@ -34,7 +34,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/home/soumyajit/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/hardware/ic_keyboard_arrow_right_black_24dp.xml" />
+                                                <entry key="url" value="jar:file:/home/soumyajit/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/image/ic_collections_bookmark_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -44,8 +44,8 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="outputName" value="ic_arrow_next" />
-                                      <entry key="theme" value="CUSTOM" />
+                                      <entry key="outputName" value="ic_nav_bookmark" />
+                                      <entry key="themeColor" value="05050a" />
                                     </map>
                                   </option>
                                 </PersistentState>

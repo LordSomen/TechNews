@@ -28,7 +28,7 @@ public class MainNewsActivity extends AppCompatActivity
 
     public static final int CHANNEL = View.generateViewId();
 
-    private HashMap<String,Integer> mNewsChannelMap = new HashMap<>();
+    private HashMap<String, Integer> mNewsChannelMap = new HashMap<>();
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.drawer_layout)
@@ -63,7 +63,7 @@ public class MainNewsActivity extends AppCompatActivity
     }
 
     private void createMap() {
-        for(String item : DataSource.NEWS_CHANNEL_LIST){
+        for (String item : DataSource.NEWS_CHANNEL_LIST) {
             mNewsChannelMap.put(item, View.generateViewId());
         }
     }
@@ -112,11 +112,63 @@ public class MainNewsActivity extends AppCompatActivity
 
     public void setFragment(int fragmentId) {
         Fragment fragment = null;
-        switch (fragmentId){
-            case R.id.nav_techcrunch :
-                fragment = new ChannelNewsFragment();
+        switch (fragmentId) {
+
+            case R.id.nav_ars_technica:
+                fragment = ChannelNewsFragment.init("ars_technica");
                 break;
-            case R.id.nav_favourite :
+            case R.id.nav_bbc_news:
+                fragment = ChannelNewsFragment.init("bbc_news");
+                break;
+            case R.id.nav_bloomberg:
+                fragment = ChannelNewsFragment.init("bloomberg");
+                break;
+            case R.id.nav_cnet:
+                fragment = ChannelNewsFragment.init("cnet");
+                break;
+            case R.id.nav_crypto_coin_news:
+                fragment = ChannelNewsFragment.init("crypto_coin_news");
+                break;
+            case R.id.nav_engadget:
+                fragment = ChannelNewsFragment.init("engadget");
+                break;
+            case R.id.nav_google_news:
+                fragment = ChannelNewsFragment.init("google_news");
+                break;
+            case R.id.nav_hacker_news:
+                fragment = ChannelNewsFragment.init("hacker_news");
+                break;
+            case R.id.nav_mashable:
+                fragment = ChannelNewsFragment.init("mashable");
+                break;
+            case R.id.nav_new_scientist:
+                fragment = ChannelNewsFragment.init("new_scientist");
+                break;
+            case R.id.nav_recode:
+                fragment = ChannelNewsFragment.init("recode");
+                break;
+            case R.id.nav_reddit_r_all:
+                fragment = ChannelNewsFragment.init("reddit_r_all");
+                break;
+            case R.id.nav_techrader:
+                fragment = ChannelNewsFragment.init("techrader");
+                break;
+            case R.id.nav_techcrunch:
+                fragment = ChannelNewsFragment.init("techcrunch");
+                break;
+            case R.id.nav_the_next_web:
+                fragment = ChannelNewsFragment.init("the_next_web");
+                break;
+            case R.id.nav_the_verge:
+                fragment = ChannelNewsFragment.init("the_verge");
+                break;
+            case R.id.nav_vice_news:
+                fragment = ChannelNewsFragment.init("vice_news");
+                break;
+            case R.id.nav_wired:
+                fragment = ChannelNewsFragment.init("wired");
+                break;
+            case R.id.nav_favourite:
                 fragment = new FavNewsFragment();
                 break;
         }
@@ -135,12 +187,12 @@ public class MainNewsActivity extends AppCompatActivity
     private void addMenuItemInNavMenuDrawer() {
 
         Menu menu = mNavigationView.getMenu();
-        Menu submenu = menu.addSubMenu(0,CHANNEL,0,"Channels");
+        Menu submenu = menu.addSubMenu(0, CHANNEL, 0, "Channels");
 
         List<String> newsChannels = DataSource.NEWS_CHANNEL_LIST;
-        for(int i = 0; i<newsChannels.size();i++){
+        for (int i = 0; i < newsChannels.size(); i++) {
             String item = newsChannels.get(i);
-            submenu.add(CHANNEL,mNewsChannelMap.get(item),i,item);
+            submenu.add(CHANNEL, mNewsChannelMap.get(item), i, item);
         }
         mNavigationView.invalidate();
     }
