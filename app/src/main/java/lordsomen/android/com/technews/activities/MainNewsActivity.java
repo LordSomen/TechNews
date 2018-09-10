@@ -1,6 +1,9 @@
 package lordsomen.android.com.technews.activities;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -8,12 +11,17 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.HashMap;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,12 +29,18 @@ import lordsomen.android.com.technews.R;
 import lordsomen.android.com.technews.fragments.ChannelNewsFragment;
 import lordsomen.android.com.technews.fragments.FavNewsFragment;
 import lordsomen.android.com.technews.utils.DataSource;
+import lordsomen.android.com.technews.utils.GlideApp;
 import lordsomen.android.com.technews.widget.NewsAppWidget;
 
 public class MainNewsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final int CHANNEL = View.generateViewId();
+    public static final String TAG = MainNewsActivity.class.getSimpleName();
+    public static final String PREF_NAME = "name-pref";
+    public static final String PREF_EMAIL = "email-pref";
+    public static final String PREF_IMAGE = "image-pref";
+
 
     private HashMap<String, Integer> mNewsChannelMap = new HashMap<>();
     @BindView(R.id.toolbar)
@@ -35,6 +49,12 @@ public class MainNewsActivity extends AppCompatActivity
     DrawerLayout mDrawerLayout;
     @BindView(R.id.nav_view)
     NavigationView mNavigationView;
+    TextView navHeaderName;
+    TextView navHeaderEmail;
+    ImageView navHeaderImage;
+    private String name;
+    private String email;
+    private String imageUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +62,18 @@ public class MainNewsActivity extends AppCompatActivity
         setContentView(R.layout.activity_main_news);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
+        View nav_header = mNavigationView.getHeaderView(0);
+        navHeaderEmail = nav_header.findViewById(R.id.nav_email);
+        navHeaderName = nav_header.findViewById(R.id.nav_name);
+        navHeaderImage = nav_header.findViewById(R.id.nav_imageView);
+
+
+        Intent intent = getIntent();
+        if(null != intent) {
+            Bundle intentData = intent.getExtras();
+            setIdentityData(intentData);
+
+        }
 
         //Initializing DataSource class
         DataSource dataSource = new DataSource();
@@ -61,8 +93,47 @@ public class MainNewsActivity extends AppCompatActivity
         setFragment(R.id.nav_techcrunch);
         NewsAppWidget.sendRefreshBroadcast(getApplicationContext());
     }
+    
+    private void setIdentityData(Bundle bundle){
+        
+        if (bundle != null) {
+            name = bundle.getString(SignUpActivity.NAME_KEY);
+            email = bundle.getString(SignUpActivity.EMAIL_KEY);
+            imageUrl = bundle.getString(SignUpActivity.IMAGE_URL_KEY);
+            String phoneNo = bundle.getString(SignUpActivity.PHONE_KEY);
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(PREF_NAME,name);
+            editor.putString(PREF_EMAIL,email);
+            editor.putString(PREF_IMAGE,imageUrl);
+            editor.apply();
+            navHeaderName.setText(name);
+            navHeaderEmail.setText(email);
+            loadHeaderImage();
+            Log.d("MainActivity","Uri "+imageUrl);
+//            User user = new User(name,email,null,imageUrl,null,null,null);
+//            uploadBasicUserData(user);
+        }else {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            name = preferences.getString(PREF_NAME,"");
+            email = preferences.getString(PREF_EMAIL,"");
+            imageUrl = preferences.getString(PREF_IMAGE,"");
+            Log.d(TAG,"Name "+name);
+            navHeaderName.setText(name);
+            navHeaderEmail.setText(email);
+            loadHeaderImage();
+        }
+    }
 
-    private void createMap() {
+    private void loadHeaderImage(){
+
+        GlideApp.with(this)
+                .load(imageUrl)
+                .circleCrop()
+                .into(navHeaderImage);
+    }
+    
+    private void createMap(){
         for (String item : DataSource.NEWS_CHANNEL_LIST) {
             mNewsChannelMap.put(item, View.generateViewId());
         }
@@ -171,6 +242,14 @@ public class MainNewsActivity extends AppCompatActivity
             case R.id.nav_favourite:
                 fragment = new FavNewsFragment();
                 break;
+            case R.id.nav_log_out:
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(this,SignUpActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            default:
+                Toast.makeText(this, "Can't find the nav item",Toast.LENGTH_SHORT).show();
         }
         constructFragment(fragment);
     }
@@ -184,17 +263,17 @@ public class MainNewsActivity extends AppCompatActivity
     /**
      * this method adds menu item in the nav drawer dynamically
      */
-    private void addMenuItemInNavMenuDrawer() {
-
-        Menu menu = mNavigationView.getMenu();
-        Menu submenu = menu.addSubMenu(0, CHANNEL, 0, "Channels");
-
-        List<String> newsChannels = DataSource.NEWS_CHANNEL_LIST;
-        for (int i = 0; i < newsChannels.size(); i++) {
-            String item = newsChannels.get(i);
-            submenu.add(CHANNEL, mNewsChannelMap.get(item), i, item);
-        }
-        mNavigationView.invalidate();
-    }
+//    private void addMenuItemInNavMenuDrawer() {
+//
+//        Menu menu = mNavigationView.getMenu();
+//        Menu submenu = menu.addSubMenu(0, CHANNEL, 0, "Channels");
+//
+//        List<String> newsChannels = DataSource.NEWS_CHANNEL_LIST;
+//        for (int i = 0; i < newsChannels.size(); i++) {
+//            String item = newsChannels.get(i);
+//            submenu.add(CHANNEL, mNewsChannelMap.get(item), i, item);
+//        }
+//        mNavigationView.invalidate();
+//    }
 
 }

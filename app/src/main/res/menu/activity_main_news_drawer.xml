@@ -9,11 +9,15 @@
             android:id="@+id/nav_favourite"
             android:title="Bookmarks"
             android:icon="@drawable/ic_nav_bookmark"/>
+        <item
+            android:id="@+id/nav_log_out"
+            android:title="Log Out"
+            android:icon="@drawable/ic_nav_bookmark"/>
 
     </group>
 
-    <item android:title="Channels">
-        <menu>
+    <group android:title="Channels"
+             android:checkableBehavior="single">
             <!--nav item for channel TechCrunch-->
             <item
                 android:id="@+id/nav_google-news"
@@ -73,7 +77,6 @@
                 android:id="@+id/nav_vice-news"
                 android:title="Vice-News" />
 
-        </menu>
-    </item>
+    </group>
 
 </menu>

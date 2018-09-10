@@ -99,6 +99,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
     private void loadImage(String url) {
         GlideApp.with(this)
                 .load(url)
+                .placeholder(R.drawable.placeholder)
                 .centerCrop()
                 .into(mThumbnail);
     }

@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission-sdk-23 android:name="android.permission.ACCOUNT_MANAGER" />
+
 
     <application
         android:allowBackup="true"
@@ -16,11 +18,6 @@
             android:name=".activities.MainNewsActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <receiver android:name=".widget.NewsAppWidget">
@@ -42,9 +39,20 @@
             android:authorities="lordsomen.android.com.technews.database"
             android:exported="true" />
 
-        <activity android:name=".activities.NewsDetailsActivity" />
-        <activity android:name=".activities.SignUpActivity" />
-        <activity android:name=".activities.LoginActivity"></activity>
+        <activity android:name=".activities.NewsDetailsActivity"/>
+
+        <activity android:name=".activities.SignUpActivity" >
+            <intent-filter>
+
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".activities.LoginActivity" />
+        <activity android:name=".activities.ResetPasswordActivity"/>
+
     </application>
 
 </manifest>
