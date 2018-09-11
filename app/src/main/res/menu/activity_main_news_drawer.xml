@@ -12,22 +12,22 @@
         <item
             android:id="@+id/nav_log_out"
             android:title="Log Out"
-            android:icon="@drawable/ic_nav_bookmark"/>
+           />
+        <item
+            android:id="@+id/nav_top_headlines"
+            android:title="Top Headlines"
+            />
 
     </group>
 
-    <group android:title="Channels"
+    <item android:title="Channels"
              android:checkableBehavior="single">
             <!--nav item for channel TechCrunch-->
-            <item
-                android:id="@+id/nav_google-news"
-                android:title="Google-news" />
+
             <item
                 android:id="@+id/nav_techcrunch"
                 android:title="TechCrunch" />
-            <item
-                android:id="@+id/nav_cnet"
-                android:title="CNet" />
+
             <item
                 android:id="@+id/nav_ars-technica"
                 android:title="Ars-Technica" />
@@ -77,6 +77,6 @@
                 android:id="@+id/nav_vice-news"
                 android:title="Vice-News" />
 
-    </group>
+    </item>
 
 </menu>

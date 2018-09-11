@@ -144,14 +144,14 @@ public class NewsArticleAdapter extends RecyclerView.Adapter<NewsArticleAdapter.
                     editor.apply();
                     mBookmark.setBackground(ContextCompat
                             .getDrawable(mContext, R.drawable.ic_bookmark_filled));
-                    database.add(newsArticleData, mContext);
+                    database.addToFavData(newsArticleData, mContext);
                 } else {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.remove(POS + id);
                     editor.apply();
                     mBookmark.setBackground(ContextCompat
                             .getDrawable(mContext, R.drawable.ic_bookmark_blank));
-                    database.remove(id, mContext);
+                    database.removeFromFavData(id, mContext);
                 }
 
             } else {

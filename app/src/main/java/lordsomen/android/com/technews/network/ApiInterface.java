@@ -18,7 +18,7 @@ public interface ApiInterface {
             ,@Query("apiKey") String apiKey);
 
     @GET("top-headlines")
-    Call<ApiData> getAllTopHeadlinesDataWidget(@Query("sources") String source
+    Call<ApiData> getAllTopHeadlinesData(@Query("sources") String source
             , @Query("apiKey") String apiKey);
 
 }

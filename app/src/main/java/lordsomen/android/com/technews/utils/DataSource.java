@@ -22,11 +22,11 @@ public class DataSource {
      * this constructor initializes both of the lists
      */
     public DataSource() {
-        NEWS_QUERY_LIST.addAll(Arrays.asList("technology", "research", "startup",
-                "artificial-intelligence", "blockchain", "augmented-reality", "virtual-reality",
+        NEWS_QUERY_LIST.addAll(Arrays.asList("artificial-intelligence","startup",
+                "blockchain", "research", "augmented-reality", "virtual-reality","technology",
                 "programming", "google", "apple", "amazon", "facebook"));
 
-        NEWS_CHANNEL_LIST.addAll(Arrays.asList("google-news","cnet", "ars-technica", "bbc-news",
+        NEWS_CHANNEL_LIST.addAll(Arrays.asList("ars-technica", "bbc-news",
                 "wired","cnn", "engadget", "techcrunch", "mashable", "the-next-web", "the-verge",
                 "bloomberg", "hacker-news", "reddit-r-all","crypto-coin-news","recode","techrader",
                 "new-scientist","vice-news"));

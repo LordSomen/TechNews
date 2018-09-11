@@ -1,5 +1,6 @@
 package lordsomen.android.com.technews.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,24 +20,42 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.RetryStrategy;
+import com.firebase.jobdispatcher.Trigger;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import lordsomen.android.com.technews.R;
 import lordsomen.android.com.technews.fragments.ChannelNewsFragment;
 import lordsomen.android.com.technews.fragments.FavNewsFragment;
+import lordsomen.android.com.technews.fragments.TopHeadlinesFragment;
 import lordsomen.android.com.technews.utils.DataSource;
 import lordsomen.android.com.technews.utils.GlideApp;
+import lordsomen.android.com.technews.utils.ScheduledJobService;
 import lordsomen.android.com.technews.widget.NewsAppWidget;
 
 public class MainNewsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static final int CHANNEL = View.generateViewId();
+
     public static final String TAG = MainNewsActivity.class.getSimpleName();
+    public static final String JOB_TAG = "UniqueTagForYourJob";
+    public int TRIGGER = 0;
+    private static final int JOB_INTERVAL_HOURS = 12;
+    private static final int JOB_INTERVAL_SECONDS = (int) (TimeUnit.HOURS
+            .toSeconds(JOB_INTERVAL_HOURS));
+    private static final int SYNC_FLEXTIME_SECONDS = (int) (TimeUnit.HOURS
+            .toSeconds(2));
+
     public static final String PREF_NAME = "name-pref";
     public static final String PREF_EMAIL = "email-pref";
     public static final String PREF_IMAGE = "image-pref";
@@ -72,8 +91,7 @@ public class MainNewsActivity extends AppCompatActivity
         if(null != intent) {
             Bundle intentData = intent.getExtras();
             setIdentityData(intentData);
-
-        }
+            }
 
         //Initializing DataSource class
         DataSource dataSource = new DataSource();
@@ -88,10 +106,10 @@ public class MainNewsActivity extends AppCompatActivity
 
         mNavigationView.setNavigationItemSelectedListener(this);
 
-//        addMenuItemInNavMenuDrawer();
         //this lines set the initial nav fragment
         setFragment(R.id.nav_techcrunch);
         NewsAppWidget.sendRefreshBroadcast(getApplicationContext());
+        scheduleJob(this);
     }
     
     private void setIdentityData(Bundle bundle){
@@ -111,8 +129,7 @@ public class MainNewsActivity extends AppCompatActivity
             navHeaderEmail.setText(email);
             loadHeaderImage();
             Log.d("MainActivity","Uri "+imageUrl);
-//            User user = new User(name,email,null,imageUrl,null,null,null);
-//            uploadBasicUserData(user);
+
         }else {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             name = preferences.getString(PREF_NAME,"");
@@ -194,17 +211,14 @@ public class MainNewsActivity extends AppCompatActivity
             case R.id.nav_bloomberg:
                 fragment = ChannelNewsFragment.init("bloomberg");
                 break;
-            case R.id.nav_cnet:
-                fragment = ChannelNewsFragment.init("cnet");
+            case R.id.nav_cnn:
+                fragment = ChannelNewsFragment.init("cnn");
                 break;
             case R.id.nav_crypto_coin_news:
                 fragment = ChannelNewsFragment.init("crypto_coin_news");
                 break;
             case R.id.nav_engadget:
                 fragment = ChannelNewsFragment.init("engadget");
-                break;
-            case R.id.nav_google_news:
-                fragment = ChannelNewsFragment.init("google_news");
                 break;
             case R.id.nav_hacker_news:
                 fragment = ChannelNewsFragment.init("hacker_news");
@@ -242,6 +256,9 @@ public class MainNewsActivity extends AppCompatActivity
             case R.id.nav_favourite:
                 fragment = new FavNewsFragment();
                 break;
+            case R.id.nav_top_headlines:
+                fragment = new TopHeadlinesFragment();
+                break;
             case R.id.nav_log_out:
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(this,SignUpActivity.class);
@@ -259,6 +276,65 @@ public class MainNewsActivity extends AppCompatActivity
                 .replace(R.id.main_content, fragment)
                 .commit();
     }
+
+    public static void scheduleJob(Context context) {
+        //creating new firebase job dispatcher
+        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
+        //creating new job and adding it with dispatcher
+        Job job = createJob(dispatcher);
+        dispatcher.mustSchedule(job);
+    }
+
+    public static Job createJob(FirebaseJobDispatcher dispatcher){
+
+        Job job = dispatcher.newJobBuilder()
+                //persist the task across boots
+                .setLifetime(Lifetime.FOREVER)
+                //.setLifetime(Lifetime.UNTIL_NEXT_BOOT)
+                //call this service when the criteria are met.
+                .setService(ScheduledJobService.class)
+                //unique id of the task
+                .setTag(JOB_TAG)
+                //don't overwrite an existing job with the same tag
+                .setReplaceCurrent(false)
+                // We are mentioning that the job is periodic.
+                .setRecurring(true)
+                .setTrigger(Trigger.executionWindow(10 ,
+                        JOB_INTERVAL_SECONDS ))
+                .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
+                .setReplaceCurrent(true)
+                //Run this job only when the network is available.
+                .setConstraints(Constraint.ON_ANY_NETWORK)
+                .build();
+
+        return job;
+    }
+
+    public static Job updateJob(FirebaseJobDispatcher dispatcher) {
+        Job newJob = dispatcher.newJobBuilder()
+                //update if any task with the given tag exists.
+                .setReplaceCurrent(true)
+                //Integrate the job you want to start.
+                .setService(ScheduledJobService.class)
+                .setTag(JOB_TAG)
+                // Run between 30 - 60 seconds from now.
+                .setTrigger(Trigger.executionWindow(10 ,
+                        JOB_INTERVAL_SECONDS ))
+                .build();
+        return newJob;
+    }
+
+    public void cancelJob(Context context){
+
+        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
+        //Cancel all the jobs for this package
+        dispatcher.cancelAll();
+        // Cancel the job for this tag
+        dispatcher.cancel(JOB_TAG);
+
+    }
+
+
 
     /**
      * this method adds menu item in the nav drawer dynamically
