@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
@@ -39,8 +38,7 @@ public class TopHeadlinesFragment extends Fragment implements NewsArticleAdapter
         private NewsArticleAdapter mNewsArticleAdapter;
         private List<NewsArticleData> mNewsArticleDataList;
         private Context mContext;
-        @BindView(R.id.fav_news_framelayout)
-        FrameLayout mFrameLayoutFav;
+
         @BindView(R.id.fav_news_rv)
         RecyclerView mRecyclerViewFav;
         @BindView(R.id.fav_news_action_error)

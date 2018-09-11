@@ -49,7 +49,9 @@ public class ScheduledJobService extends JobService {
         try {
             sources = DataSource.NEWS_CHANNEL_LIST;
             mApiInterface = ApiClient.getApiClientTopHeadlines().create(ApiInterface.class);
-            loadData(sources.get(0));
+            if(null != sources && sources.size() > 0) {
+                loadData(sources.get(0));
+            }
         } finally {
             jobFinished(parameters, true);
         }

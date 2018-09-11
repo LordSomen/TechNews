@@ -8,4 +8,8 @@
     <string name="action_settings">Settings</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="thumbnail_content_description_details">This is a thumbnail image of the related article which was opened in details view</string>
+    <string name="thumbnail_content_description">This is a thumbnail image of the related article which was shown in recycler view</string>
+    <string name="widget_image_view">this is the image of the widget\'s list item shown</string>
+
 </resources>

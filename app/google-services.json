@@ -15,7 +15,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "472701029922-nqi7lbnb7eb1gndutcbd8ke8s0tqejob.apps.googleusercontent.com",
+          "client_id": "472701029922-eh7e2o44n08huidmp08e87l9t8godefi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "lordsomen.android.com.technews",
+            "certificate_hash": "94ac30cb2f22390519bd0443317a4e5555c7d5de"
+          }
+        },
+        {
+          "client_id": "472701029922-l32po54ctjdqjsqu0n1o098h7lvv1rnf.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "lordsomen.android.com.technews",

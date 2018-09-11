@@ -32,6 +32,7 @@ public class ChannelNewsFragment extends Fragment {
     TabLayout mTabLayout;
     @BindView(R.id.channel_frag_viewpager)
     ViewPager mViewPager;
+
     private String mNewsSource;
 
     public static ChannelNewsFragment init(String source) {
@@ -49,6 +50,7 @@ public class ChannelNewsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if(null != getArguments()) {
             mNewsSource = getArguments().getString(SOURCE);
         }        

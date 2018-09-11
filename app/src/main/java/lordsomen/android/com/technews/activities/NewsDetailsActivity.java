@@ -3,6 +3,7 @@ package lordsomen.android.com.technews.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,8 +20,8 @@ import lordsomen.android.com.technews.utils.GlideApp;
 public class NewsDetailsActivity extends AppCompatActivity {
 
     private NewsArticleData mNewsArticleData;
-    @BindView(R.id.textView_title_details)
-    TextView mTitle;
+//    @BindView(R.id.textView_title_details)
+//    TextView mTitle;
     @BindView(R.id.imageView_details)
     ImageView mThumbnail;
     @BindView(R.id.layout_author_details)
@@ -39,12 +40,17 @@ public class NewsDetailsActivity extends AppCompatActivity {
     TextView mDescription;
     @BindView(R.id.textView_description_label_details)
     TextView mDescriptionLabel;
+    @BindView(R.id.toolbar_details)
+    Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_details);
         ButterKnife.bind(this);
+        if (null != mToolbar) {
+            setSupportActionBar(mToolbar);
+            }
         Intent intent = getIntent();
         if(null != intent) {
             Bundle intentData = intent.getExtras();
@@ -58,7 +64,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
                     }
                     String title = mNewsArticleData.getTitle();
                     if(null != title){
-                        mTitle.setText(title);
+                        mToolbar.setTitle(title);
                     }
                     Object author = mNewsArticleData.getAuthor();
                     if(null != author){

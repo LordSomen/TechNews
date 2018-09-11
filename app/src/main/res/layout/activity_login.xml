@@ -77,6 +77,7 @@
             android:text="Not Registered....Click Here"
             android:textAllCaps="false"
             android:textSize="15dp" />
+
     </LinearLayout>
 
     <ProgressBar

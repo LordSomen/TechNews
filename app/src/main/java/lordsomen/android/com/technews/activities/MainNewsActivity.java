@@ -62,7 +62,7 @@ public class MainNewsActivity extends AppCompatActivity
 
 
     private HashMap<String, Integer> mNewsChannelMap = new HashMap<>();
-    @BindView(R.id.toolbar)
+    @BindView(R.id.main_toolbar)
     Toolbar mToolbar;
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
