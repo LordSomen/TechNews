@@ -10,13 +10,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 
-
 public class NewsContentProvider extends ContentProvider {
 
 
     private static final String AUTHORITY = "lordsomen.android.com.technews.database";
 
-    public static final Uri newsUri = Uri.parse("content://" + AUTHORITY + "/" + 
+    public static final Uri newsUri = Uri.parse("content://" + AUTHORITY + "/" +
             NewsAppData.TABLE_NAME);
 
     private static final int NEWS_DIR_CODE = 100;

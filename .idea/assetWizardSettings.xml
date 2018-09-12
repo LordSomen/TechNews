@@ -40,12 +40,24 @@
                                           </PersistentState>
                                         </value>
                                       </entry>
+                                      <entry key="image">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="trimmed" value="true" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
                                     </map>
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="outputName" value="ic_nav_bookmark" />
-                                      <entry key="themeColor" value="05050a" />
+                                      <entry key="assetType" value="IMAGE" />
+                                      <entry key="imageAsset" value="$USER_HOME$/Desktop/air.apps.NewsEnterprise.technews.jpg.png" />
+                                      <entry key="outputName" value="ic_tech_news" />
                                     </map>
                                   </option>
                                 </PersistentState>

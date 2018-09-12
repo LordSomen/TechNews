@@ -8,18 +8,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class ApiData implements Parcelable
-{
+public class ApiData implements Parcelable {
 
-    @SerializedName("status")
-    @Expose
-    private String status;
-    @SerializedName("totalResults")
-    @Expose
-    private Long totalResults;
-    @SerializedName("articles")
-    @Expose
-    private List<NewsArticleData> articles = null;
     public final static Parcelable.Creator<ApiData> CREATOR = new Creator<ApiData>() {
 
 
@@ -34,8 +24,16 @@ public class ApiData implements Parcelable
             return (new ApiData[size]);
         }
 
-    }
-            ;
+    };
+    @SerializedName("status")
+    @Expose
+    private String status;
+    @SerializedName("totalResults")
+    @Expose
+    private Long totalResults;
+    @SerializedName("articles")
+    @Expose
+    private List<NewsArticleData> articles = null;
 
     protected ApiData(Parcel in) {
         this.status = ((String) in.readValue((String.class.getClassLoader())));
@@ -45,13 +43,11 @@ public class ApiData implements Parcelable
 
     /**
      * No args constructor for use in serialization
-     *
      */
     public ApiData() {
     }
 
     /**
-     *
      * @param articles
      * @param totalResults
      * @param status

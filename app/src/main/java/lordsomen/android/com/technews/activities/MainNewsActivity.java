@@ -13,7 +13,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,6 +29,7 @@ import com.firebase.jobdispatcher.Trigger;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -46,22 +46,18 @@ import lordsomen.android.com.technews.widget.NewsAppWidget;
 public class MainNewsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-
     public static final String TAG = MainNewsActivity.class.getSimpleName();
     public static final String JOB_TAG = "UniqueTagForYourJob";
-    public int TRIGGER = 0;
+    public static final String PREF_NAME = "name-pref";
+    public static final String PREF_EMAIL = "email-pref";
+    public static final String PREF_IMAGE = "image-pref";
+    private final static String CURRENT_FRAGMENT_KEY = "current_fragment_key";
     private static final int JOB_INTERVAL_HOURS = 12;
     private static final int JOB_INTERVAL_SECONDS = (int) (TimeUnit.HOURS
             .toSeconds(JOB_INTERVAL_HOURS));
     private static final int SYNC_FLEXTIME_SECONDS = (int) (TimeUnit.HOURS
             .toSeconds(2));
-
-    public static final String PREF_NAME = "name-pref";
-    public static final String PREF_EMAIL = "email-pref";
-    public static final String PREF_IMAGE = "image-pref";
-
-
-    private HashMap<String, Integer> mNewsChannelMap = new HashMap<>();
+    public int TRIGGER = 0;
     @BindView(R.id.main_toolbar)
     Toolbar mToolbar;
     @BindView(R.id.drawer_layout)
@@ -71,9 +67,58 @@ public class MainNewsActivity extends AppCompatActivity
     TextView navHeaderName;
     TextView navHeaderEmail;
     ImageView navHeaderImage;
+    private Fragment currentFragment;
+    private HashMap<String, Integer> mNewsChannelMap = new HashMap<>();
     private String name;
     private String email;
     private String imageUrl;
+
+    public static void scheduleJob(Context context) {
+        //creating new firebase job dispatcher
+        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
+        //creating new job and adding it with dispatcher
+        Job job = createJob(dispatcher);
+        dispatcher.mustSchedule(job);
+    }
+
+    public static Job createJob(FirebaseJobDispatcher dispatcher) {
+
+        Job job = dispatcher.newJobBuilder()
+                //persist the task across boots
+                .setLifetime(Lifetime.FOREVER)
+                //.setLifetime(Lifetime.UNTIL_NEXT_BOOT)
+                //call this service when the criteria are met.
+                .setService(ScheduledJobService.class)
+                //unique id of the task
+                .setTag(JOB_TAG)
+                //don't overwrite an existing job with the same tag
+                .setReplaceCurrent(false)
+                // We are mentioning that the job is periodic.
+                .setRecurring(true)
+                .setTrigger(Trigger.executionWindow(10,
+                        JOB_INTERVAL_SECONDS))
+                .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
+                .setReplaceCurrent(true)
+                //Run this job only when the network is available.
+                .setConstraints(Constraint.ON_ANY_NETWORK)
+                .build();
+
+        return job;
+    }
+
+    public static Job updateJob(FirebaseJobDispatcher dispatcher) {
+        Job newJob = dispatcher.newJobBuilder()
+                //update if any task with the given tag exists.
+                .setReplaceCurrent(true)
+                //Integrate the job you want to start.
+                .setService(ScheduledJobService.class)
+                .setTag(JOB_TAG)
+                // Run between 30 - 60 seconds from now.
+                .setTrigger(Trigger.executionWindow(10,
+                        JOB_INTERVAL_SECONDS))
+                .build();
+        return newJob;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,10 +133,16 @@ public class MainNewsActivity extends AppCompatActivity
 
 
         Intent intent = getIntent();
-        if(null != intent) {
+        if (null != intent) {
             Bundle intentData = intent.getExtras();
-            setIdentityData(intentData);
+            try {
+                setIdentityData(intentData);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+        }
 
         //Initializing DataSource class
         DataSource dataSource = new DataSource();
@@ -107,13 +158,22 @@ public class MainNewsActivity extends AppCompatActivity
         mNavigationView.setNavigationItemSelectedListener(this);
 
         //this lines set the initial nav fragment
-        setFragment(R.id.nav_techcrunch);
+        if (savedInstanceState != null) {
+            Fragment fragment = getSupportFragmentManager().getFragment(savedInstanceState,
+                    CURRENT_FRAGMENT_KEY);
+            currentFragment = fragment;
+            constructFragment(fragment);
+        } else {
+            setFragment(R.id.nav_techcrunch);
+            mNavigationView.setCheckedItem(R.id.nav_techcrunch);
+
+        }
         NewsAppWidget.sendRefreshBroadcast(getApplicationContext());
         scheduleJob(this);
     }
-    
-    private void setIdentityData(Bundle bundle){
-        
+
+    private void setIdentityData(Bundle bundle) throws ExecutionException, InterruptedException {
+
         if (bundle != null) {
             name = bundle.getString(SignUpActivity.NAME_KEY);
             email = bundle.getString(SignUpActivity.EMAIL_KEY);
@@ -121,36 +181,36 @@ public class MainNewsActivity extends AppCompatActivity
             String phoneNo = bundle.getString(SignUpActivity.PHONE_KEY);
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(PREF_NAME,name);
-            editor.putString(PREF_EMAIL,email);
-            editor.putString(PREF_IMAGE,imageUrl);
+            editor.putString(PREF_NAME, name);
+            editor.putString(PREF_EMAIL, email);
+            editor.putString(PREF_IMAGE, imageUrl);
             editor.apply();
             navHeaderName.setText(name);
             navHeaderEmail.setText(email);
             loadHeaderImage();
-            Log.d("MainActivity","Uri "+imageUrl);
+            Log.d("MainActivity", "Uri " + imageUrl);
 
-        }else {
+        } else {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            name = preferences.getString(PREF_NAME,"");
-            email = preferences.getString(PREF_EMAIL,"");
-            imageUrl = preferences.getString(PREF_IMAGE,"");
-            Log.d(TAG,"Name "+name);
+            name = preferences.getString(PREF_NAME, "");
+            email = preferences.getString(PREF_EMAIL, "");
+            imageUrl = preferences.getString(PREF_IMAGE, "");
+            Log.d(TAG, "Name " + name);
             navHeaderName.setText(name);
             navHeaderEmail.setText(email);
             loadHeaderImage();
         }
     }
 
-    private void loadHeaderImage(){
+    private void loadHeaderImage() throws ExecutionException, InterruptedException {
 
         GlideApp.with(this)
                 .load(imageUrl)
                 .circleCrop()
                 .into(navHeaderImage);
     }
-    
-    private void createMap(){
+
+    private void createMap() {
         for (String item : DataSource.NEWS_CHANNEL_LIST) {
             mNewsChannelMap.put(item, View.generateViewId());
         }
@@ -165,34 +225,12 @@ public class MainNewsActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_news, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        mNavigationView.setCheckedItem(id);
         setFragment(id);
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
@@ -261,13 +299,14 @@ public class MainNewsActivity extends AppCompatActivity
                 break;
             case R.id.nav_log_out:
                 FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(this,SignUpActivity.class);
+                Intent intent = new Intent(this, SignUpActivity.class);
                 startActivity(intent);
                 finish();
                 break;
             default:
-                Toast.makeText(this, "Can't find the nav item",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.cant_find_nav, Toast.LENGTH_SHORT).show();
         }
+        currentFragment = fragment;
         constructFragment(fragment);
     }
 
@@ -277,54 +316,14 @@ public class MainNewsActivity extends AppCompatActivity
                 .commit();
     }
 
-    public static void scheduleJob(Context context) {
-        //creating new firebase job dispatcher
-        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
-        //creating new job and adding it with dispatcher
-        Job job = createJob(dispatcher);
-        dispatcher.mustSchedule(job);
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (getSupportFragmentManager() != null)
+            getSupportFragmentManager().putFragment(outState, CURRENT_FRAGMENT_KEY, currentFragment);
     }
 
-    public static Job createJob(FirebaseJobDispatcher dispatcher){
-
-        Job job = dispatcher.newJobBuilder()
-                //persist the task across boots
-                .setLifetime(Lifetime.FOREVER)
-                //.setLifetime(Lifetime.UNTIL_NEXT_BOOT)
-                //call this service when the criteria are met.
-                .setService(ScheduledJobService.class)
-                //unique id of the task
-                .setTag(JOB_TAG)
-                //don't overwrite an existing job with the same tag
-                .setReplaceCurrent(false)
-                // We are mentioning that the job is periodic.
-                .setRecurring(true)
-                .setTrigger(Trigger.executionWindow(10 ,
-                        JOB_INTERVAL_SECONDS ))
-                .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
-                .setReplaceCurrent(true)
-                //Run this job only when the network is available.
-                .setConstraints(Constraint.ON_ANY_NETWORK)
-                .build();
-
-        return job;
-    }
-
-    public static Job updateJob(FirebaseJobDispatcher dispatcher) {
-        Job newJob = dispatcher.newJobBuilder()
-                //update if any task with the given tag exists.
-                .setReplaceCurrent(true)
-                //Integrate the job you want to start.
-                .setService(ScheduledJobService.class)
-                .setTag(JOB_TAG)
-                // Run between 30 - 60 seconds from now.
-                .setTrigger(Trigger.executionWindow(10 ,
-                        JOB_INTERVAL_SECONDS ))
-                .build();
-        return newJob;
-    }
-
-    public void cancelJob(Context context){
+    public void cancelJob(Context context) {
 
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
         //Cancel all the jobs for this package
@@ -334,22 +333,5 @@ public class MainNewsActivity extends AppCompatActivity
 
     }
 
-
-
-    /**
-     * this method adds menu item in the nav drawer dynamically
-     */
-//    private void addMenuItemInNavMenuDrawer() {
-//
-//        Menu menu = mNavigationView.getMenu();
-//        Menu submenu = menu.addSubMenu(0, CHANNEL, 0, "Channels");
-//
-//        List<String> newsChannels = DataSource.NEWS_CHANNEL_LIST;
-//        for (int i = 0; i < newsChannels.size(); i++) {
-//            String item = newsChannels.get(i);
-//            submenu.add(CHANNEL, mNewsChannelMap.get(item), i, item);
-//        }
-//        mNavigationView.invalidate();
-//    }
 
 }

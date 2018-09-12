@@ -33,8 +33,9 @@ public interface HeadlinesNewsAppDao {
     @Query("DELETE FROM top_headlines_data WHERE id = :id")
     int deleteById(int id);
 
-    @Query("DELETE FROM top_headlines_data ")
-    int deleteAll();
+    @Query("SELECT id  FROM top_headlines_data WHERE id NOT IN (SELECT id FROM ( SELECT id FROM top_headlines_data ORDER BY id DESC LIMIT 20) foo)")
+    List<Integer> select();
+
 
     @Query("SELECT EXISTS(SELECT 1 from top_headlines_data where id =:id) limit 1")
     boolean isInTheTable(int id);

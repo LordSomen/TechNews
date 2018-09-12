@@ -7,7 +7,7 @@ public class NewsRemoteViewsService extends RemoteViewsService {
 
     @Override
     public NewsRemoteViewsFactory onGetViewFactory(Intent intent) {
-        return new NewsRemoteViewsFactory(this.getApplicationContext(),intent);
+        return new NewsRemoteViewsFactory(this.getApplicationContext(), intent);
     }
 
 }

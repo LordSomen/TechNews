@@ -6,15 +6,8 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Source implements Parcelable
-{
+public class Source implements Parcelable {
 
-    @SerializedName("id")
-    @Expose
-    private String id;
-    @SerializedName("name")
-    @Expose
-    private String name;
     public final static Parcelable.Creator<Source> CREATOR = new Creator<Source>() {
 
 
@@ -29,8 +22,13 @@ public class Source implements Parcelable
             return (new Source[size]);
         }
 
-    }
-            ;
+    };
+    @SerializedName("id")
+    @Expose
+    private String id;
+    @SerializedName("name")
+    @Expose
+    private String name;
 
     protected Source(Parcel in) {
         this.id = ((String) in.readValue((String.class.getClassLoader())));
@@ -39,13 +37,11 @@ public class Source implements Parcelable
 
     /**
      * No args constructor for use in serialization
-     *
      */
     public Source() {
     }
 
     /**
-     *
      * @param id
      * @param name
      */

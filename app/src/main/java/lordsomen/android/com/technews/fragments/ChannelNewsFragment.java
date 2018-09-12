@@ -25,14 +25,12 @@ import lordsomen.android.com.technews.adapters.ViewPagerAdapter;
 public class ChannelNewsFragment extends Fragment {
 
 
-    private Context mContext;
     public static final String SOURCE = "source";
-
     @BindView(R.id.channel_frag_tabs)
     TabLayout mTabLayout;
     @BindView(R.id.channel_frag_viewpager)
     ViewPager mViewPager;
-
+    private Context mContext;
     private String mNewsSource;
 
     public static ChannelNewsFragment init(String source) {
@@ -40,28 +38,28 @@ public class ChannelNewsFragment extends Fragment {
 
         Bundle args = new Bundle();
 
-        args.putString(SOURCE,source);
+        args.putString(SOURCE, source);
         channelNewsFragment.setArguments(args);
 
         return channelNewsFragment;
-        
+
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(null != getArguments()) {
+        if (null != getArguments()) {
             mNewsSource = getArguments().getString(SOURCE);
-        }        
+        }
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_channel_news,container,false);
-        ButterKnife.bind(this,view);
+        View view = inflater.inflate(R.layout.fragment_channel_news, container, false);
+        ButterKnife.bind(this, view);
         setupViewPager();
         mTabLayout.setupWithViewPager(mViewPager);
         return view;
@@ -72,7 +70,7 @@ public class ChannelNewsFragment extends Fragment {
      */
     private void setupViewPager() {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager()
-                ,mNewsSource);
+                , mNewsSource);
         mViewPager.setAdapter(adapter);
     }
 

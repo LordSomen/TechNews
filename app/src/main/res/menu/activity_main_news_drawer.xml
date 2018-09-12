@@ -7,76 +7,69 @@
 
         <item
             android:id="@+id/nav_favourite"
-            android:title="Bookmarks"
-            android:icon="@drawable/ic_nav_bookmark"/>
+            android:title="@string/bookmarks" />
         <item
             android:id="@+id/nav_log_out"
-            android:title="Log Out"
-           />
+            android:title="@string/log_out" />
         <item
             android:id="@+id/nav_top_headlines"
-            android:title="Top Headlines"
-            />
+            android:title="@string/top_headlines" />
+
+
+        <item
+            android:id="@+id/nav_techcrunch"
+            android:title="@string/techcrunch" />
+
+        <item
+            android:id="@+id/nav_ars-technica"
+            android:title="@string/ars_technica" />
+        <item
+            android:id="@+id/nav_bbc-news"
+            android:title="@string/bbc_news" />
+        <item
+            android:id="@+id/nav_wired"
+            android:title="@string/wired" />
+        <item
+            android:id="@+id/nav_cnn"
+            android:title="@string/cnn" />
+        <item
+            android:id="@+id/nav_engadget"
+            android:title="@string/engadget" />
+        <item
+            android:id="@+id/nav_mashable"
+            android:title="@string/mashable" />
+        <item
+            android:id="@+id/nav_the-next-web"
+            android:title="@string/the_next_web" />
+        <item
+            android:id="@+id/nav_the-verge"
+            android:title="@string/the_verge" />
+        <item
+            android:id="@+id/nav_bloomberg"
+            android:title="@string/bloomberg" />
+        <item
+            android:id="@+id/nav_hacker-news"
+            android:title="@string/hacker_news" />
+        <item
+            android:id="@+id/nav_reddit-r-all"
+            android:title="@string/reddit" />
+        <item
+            android:id="@+id/nav_crypto-coin-news"
+            android:title="@string/crypto_coin_news" />
+        <item
+            android:id="@+id/nav_recode"
+            android:title="@string/recode" />
+        <item
+            android:id="@+id/nav_techrader"
+            android:title="@string/techrader" />
+        <item
+            android:id="@+id/nav_new-scientist"
+            android:title="@string/new_scientist" />
+        <item
+            android:id="@+id/nav_vice-news"
+            android:title="@string/vice_news" />
 
     </group>
 
-    <item android:title="Channels"
-             android:checkableBehavior="single">
-            <!--nav item for channel TechCrunch-->
-
-            <item
-                android:id="@+id/nav_techcrunch"
-                android:title="TechCrunch" />
-
-            <item
-                android:id="@+id/nav_ars-technica"
-                android:title="Ars-Technica" />
-            <item
-                android:id="@+id/nav_bbc-news"
-                android:title="Bbc-News" />
-            <item
-                android:id="@+id/nav_wired"
-                android:title="Wired" />
-            <item
-                android:id="@+id/nav_cnn"
-                android:title="Cnn" />
-            <item
-                android:id="@+id/nav_engadget"
-                android:title="Engadget" />
-            <item
-                android:id="@+id/nav_mashable"
-                android:title="Mashable" />
-            <item
-                android:id="@+id/nav_the-next-web"
-                android:title="The-Next-Web" />
-            <item
-                android:id="@+id/nav_the-verge"
-                android:title="The-Verge" />
-            <item
-                android:id="@+id/nav_bloomberg"
-                android:title="Bloomberg" />
-            <item
-                android:id="@+id/nav_hacker-news"
-                android:title="Hacker-News" />
-            <item
-                android:id="@+id/nav_reddit-r-all"
-                android:title="Reddit" />
-            <item
-                android:id="@+id/nav_crypto-coin-news"
-                android:title="Crypto-Coin-News" />
-            <item
-                android:id="@+id/nav_recode"
-                android:title="Recode" />
-            <item
-                android:id="@+id/nav_techrader"
-                android:title="Techrader" />
-            <item
-                android:id="@+id/nav_new-scientist"
-                android:title="New-Scientist" />
-            <item
-                android:id="@+id/nav_vice-news"
-                android:title="Vice-News" />
-
-    </item>
 
 </menu>

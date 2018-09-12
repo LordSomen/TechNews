@@ -18,7 +18,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     private final List<String> mKeywordQueryList = DataSource.NEWS_QUERY_LIST;
     private String mNewsSource;
 
-    public ViewPagerAdapter(FragmentManager manager,String source) {
+    public ViewPagerAdapter(FragmentManager manager, String source) {
         super(manager);
         mNewsSource = source;
         notifyDataSetChanged();
@@ -26,7 +26,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return TabNewsFragment.init(mNewsSource,mKeywordQueryList.get(position));
+        return TabNewsFragment.init(mNewsSource, mKeywordQueryList.get(position));
     }
 
     @Override

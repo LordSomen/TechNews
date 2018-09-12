@@ -6,9 +6,23 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class NewsArticleData implements Parcelable
-{
+public class NewsArticleData implements Parcelable {
 
+    public final static Parcelable.Creator<NewsArticleData> CREATOR = new Creator<NewsArticleData>() {
+
+
+        @SuppressWarnings({
+                "unchecked"
+        })
+        public NewsArticleData createFromParcel(Parcel in) {
+            return new NewsArticleData(in);
+        }
+
+        public NewsArticleData[] newArray(int size) {
+            return (new NewsArticleData[size]);
+        }
+
+    };
     @SerializedName("source")
     @Expose
     private Source source;
@@ -30,22 +44,6 @@ public class NewsArticleData implements Parcelable
     @SerializedName("publishedAt")
     @Expose
     private String publishedAt;
-    public final static Parcelable.Creator<NewsArticleData> CREATOR = new Creator<NewsArticleData>() {
-
-
-        @SuppressWarnings({
-                "unchecked"
-        })
-        public NewsArticleData createFromParcel(Parcel in) {
-            return new NewsArticleData(in);
-        }
-
-        public NewsArticleData[] newArray(int size) {
-            return (new NewsArticleData[size]);
-        }
-
-    }
-            ;
 
     protected NewsArticleData(Parcel in) {
         this.source = ((Source) in.readValue((Source.class.getClassLoader())));
@@ -59,13 +57,11 @@ public class NewsArticleData implements Parcelable
 
     /**
      * No args constructor for use in serialization
-     *
      */
     public NewsArticleData() {
     }
 
     /**
-     *
      * @param publishedAt
      * @param author
      * @param urlToImage

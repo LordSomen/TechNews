@@ -12,10 +12,9 @@ import retrofit2.http.Query;
 public interface ApiInterface {
 
 
-
     @GET("everything")
-    Call<ApiData> getAllChannelData(@Query("sources") String source , @Query("q") String query
-            ,@Query("apiKey") String apiKey);
+    Call<ApiData> getAllChannelData(@Query("sources") String source, @Query("q") String query
+            , @Query("apiKey") String apiKey);
 
     @GET("top-headlines")
     Call<ApiData> getAllTopHeadlinesData(@Query("sources") String source

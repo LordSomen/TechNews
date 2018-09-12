@@ -21,8 +21,6 @@ import butterknife.ButterKnife;
 import lordsomen.android.com.technews.R;
 
 public class LoginActivity extends AppCompatActivity {
-    private FirebaseAuth auth;
-
     public final static String LOGIN_EMAIL = "login_email";
     @BindView(R.id.email_login)
     EditText inputEmail;
@@ -36,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     Button btnLogin;
     @BindView(R.id.btn_reset_password_login)
     Button btnReset;
-
+    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +71,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 startActivity(new Intent(LoginActivity.this,
                         ResetPasswordActivity.class));
+
             }
         });
 

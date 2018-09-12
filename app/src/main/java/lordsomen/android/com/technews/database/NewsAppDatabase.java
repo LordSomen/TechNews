@@ -6,7 +6,7 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.util.Log;
 
-@Database(entities = {NewsAppData.class , HeadlinesNewsAppData.class}, version = 1, exportSchema = false)
+@Database(entities = {NewsAppData.class, HeadlinesNewsAppData.class}, version = 1, exportSchema = false)
 public abstract class NewsAppDatabase extends RoomDatabase {
 
     private static final String DATABASE_NAME = "News";

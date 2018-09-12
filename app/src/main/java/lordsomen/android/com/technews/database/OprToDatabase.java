@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 
+import java.util.List;
+
 import lordsomen.android.com.technews.pojos.NewsArticleData;
 import lordsomen.android.com.technews.utils.AppExecutors;
 import lordsomen.android.com.technews.utils.GenerateID;
@@ -14,7 +16,6 @@ public class OprToDatabase {
     private static final String POS = "pos";
     private static final String SHARED_PREF_BUTTON = "shared_pref";
     private NewsAppDatabase newsAppDatabase;
-    private NewsArticleData newsArticleData;
 
 
     public void addToFavData(NewsArticleData newsArticleData, final Context context) {
@@ -34,12 +35,13 @@ public class OprToDatabase {
 
     }
 
-    public void removeFromFavData(final int id, Context context) {
+    public void removeFromFavData(final int id, final Context context) {
         newsAppDatabase = NewsAppDatabase.getDataInstance(context);
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 newsAppDatabase.NewsAppDao().deleteById(id);
+
             }
         });
     }
@@ -50,7 +52,7 @@ public class OprToDatabase {
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREF_BUTTON
                 , Context.MODE_PRIVATE);
 
-        if (!sharedPreferences.contains(POS + id)){
+        if (!sharedPreferences.contains(POS + id)) {
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putInt(POS + id, id);
@@ -68,35 +70,26 @@ public class OprToDatabase {
         }
     }
 
-    public void removeAllHeadlinesData(Context context) {
+    public void removeHeadlinesData(final Context context) {
         newsAppDatabase = NewsAppDatabase.getDataInstance(context);
-        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREF_BUTTON
-                , Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                newsAppDatabase.HeadlinesNewsAppDao().deleteAll();
+                List<Integer> ids = newsAppDatabase.HeadlinesNewsAppDao().select();
+                SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREF_BUTTON
+                        , Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                for (Integer id : ids) {
+                    if (!sharedPreferences.contains(POS + id)) {
+                        editor.remove(POS + id);
+                        newsAppDatabase.HeadlinesNewsAppDao().deleteById(id);
+                    }
+                }
+                editor.apply();
             }
         });
+
     }
-
-
-//    public boolean isBookmarked(final int id, Context context) throws InterruptedException {
-//        newsAppDatabase = NewsAppDatabase.getDataInstance(context);
-//        final boolean[] check = new boolean[1];
-//        check[0] = false;
-//        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                check[0] = newsAppDatabase.NewsAppDao().isInTheTable(id);
-//            }
-//        });
-//        wait(1000);
-//        return check[0];
-//    }
 
 }
 

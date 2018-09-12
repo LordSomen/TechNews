@@ -25,7 +25,6 @@ import lordsomen.android.com.technews.utils.GlideApp;
 
 public class NewsRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
-    public static final String API_KEY = "b5d42bd3009c4988bc08b6d78854717f";
 
     private ApiInterface mApiInterface;
     private String mNewsQuery;
@@ -34,7 +33,8 @@ public class NewsRemoteViewsFactory implements RemoteViewsService.RemoteViewsFac
     private Cursor mCursor;
     private Context mContext;
 
-    public  NewsRemoteViewsFactory(){}
+    public NewsRemoteViewsFactory() {
+    }
 
     public NewsRemoteViewsFactory(Context applicationContext, Intent intent) {
         mContext = applicationContext;
@@ -43,7 +43,7 @@ public class NewsRemoteViewsFactory implements RemoteViewsService.RemoteViewsFac
     @Override
     public void onCreate() {
 
-  }
+    }
 
     @Override
     public void onDataSetChanged() {
@@ -58,6 +58,7 @@ public class NewsRemoteViewsFactory implements RemoteViewsService.RemoteViewsFac
         Binder.restoreCallingIdentity(identityToken);
 
     }
+
     @Override
     public void onDestroy() {
         if (mCursor != null) {
@@ -79,10 +80,10 @@ public class NewsRemoteViewsFactory implements RemoteViewsService.RemoteViewsFac
         NewsArticleData newsArticleData = convertToArticle(mCursor.getString(mCursor
                 .getColumnIndex(NewsAppData.COLUMN_NEWS_ARTICLE_DATA)));
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_item);
-        rv.setTextViewText(R.id.textView_headline_widget_item,newsArticleData.getTitle());
+        rv.setTextViewText(R.id.textView_headline_widget_item, newsArticleData.getTitle());
 
         try {
-            Bitmap bitmap =  GlideApp.with(mContext.getApplicationContext())
+            Bitmap bitmap = GlideApp.with(mContext.getApplicationContext())
                     .asBitmap()
                     .load(newsArticleData.getUrlToImage())
                     .centerCrop()
@@ -123,7 +124,6 @@ public class NewsRemoteViewsFactory implements RemoteViewsService.RemoteViewsFac
         Gson gson = new Gson();
         return gson.fromJson(news, type);
     }
-
 
 
 }

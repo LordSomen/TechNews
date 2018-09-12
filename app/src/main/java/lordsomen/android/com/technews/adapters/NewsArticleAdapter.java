@@ -21,6 +21,7 @@ import lordsomen.android.com.technews.database.OprToDatabase;
 import lordsomen.android.com.technews.pojos.NewsArticleData;
 import lordsomen.android.com.technews.utils.GenerateID;
 import lordsomen.android.com.technews.utils.GlideApp;
+import lordsomen.android.com.technews.widget.NewsAppWidget;
 
 public class NewsArticleAdapter extends RecyclerView.Adapter<NewsArticleAdapter.
         NewsArticleAdapterViewHolder> {
@@ -102,7 +103,7 @@ public class NewsArticleAdapter extends RecyclerView.Adapter<NewsArticleAdapter.
     }
 
     public interface NewsOnClickItemHandler {
-        void onClickItem(NewsArticleData newsArticleData);
+        void onClickItem(NewsArticleData newsArticleData, ImageView mImage, TextView mTitle);
     }
 
     public class NewsArticleAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -111,8 +112,6 @@ public class NewsArticleAdapter extends RecyclerView.Adapter<NewsArticleAdapter.
         public ImageView mImageView;
         @BindView(R.id.textView_title_everything_item)
         public TextView mNewsTitle;
-        @BindView(R.id.textView_description_everything_item)
-        public TextView mNewsDesc;
         @BindView(R.id.textView_author_everything_item)
         public TextView mNewsAuthor;
         @BindView(R.id.textView_date_everything_item)
@@ -145,6 +144,9 @@ public class NewsArticleAdapter extends RecyclerView.Adapter<NewsArticleAdapter.
                     mBookmark.setBackground(ContextCompat
                             .getDrawable(mContext, R.drawable.ic_bookmark_filled));
                     database.addToFavData(newsArticleData, mContext);
+                    NewsAppWidget.sendRefreshBroadcast(mContext);
+
+
                 } else {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.remove(POS + id);
@@ -152,10 +154,12 @@ public class NewsArticleAdapter extends RecyclerView.Adapter<NewsArticleAdapter.
                     mBookmark.setBackground(ContextCompat
                             .getDrawable(mContext, R.drawable.ic_bookmark_blank));
                     database.removeFromFavData(id, mContext);
+                    NewsAppWidget.sendRefreshBroadcast(mContext);
+
                 }
 
             } else {
-                mNewsClickHandler.onClickItem(newsArticleData);
+                mNewsClickHandler.onClickItem(newsArticleData, mImageView, mNewsTitle);
             }
         }
     }

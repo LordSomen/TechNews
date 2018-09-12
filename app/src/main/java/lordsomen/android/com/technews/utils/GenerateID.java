@@ -5,58 +5,58 @@ import lordsomen.android.com.technews.pojos.Source;
 
 public class GenerateID {
 
-    public static int generateId(NewsArticleData newsArticleData){
+    public static int generateId(NewsArticleData newsArticleData) {
         int ID = 0;
         int NullValue = 1997;
 
         String title = newsArticleData.getTitle();
-        if(null != title){
+        if (null != title) {
             ID += title.length();
-        }else {
+        } else {
             ID += NullValue;
         }
-        if(null != newsArticleData.getAuthor()) {
+        if (null != newsArticleData.getAuthor()) {
             String author = String.valueOf(newsArticleData.getAuthor());
             ID += author.length();
-        }else {
+        } else {
             ID += NullValue;
         }
         String description = newsArticleData.getDescription();
-        if(null != description){
+        if (null != description) {
             ID += description.length();
-        }else {
+        } else {
             ID += NullValue;
         }
         String url = newsArticleData.getUrl();
-        if(null != url){
+        if (null != url) {
             ID += url.length();
-        }else {
+        } else {
             ID += NullValue;
         }
         String imgUrl = newsArticleData.getUrlToImage();
-        if(null != imgUrl){
+        if (null != imgUrl) {
             ID += imgUrl.length();
-        }else {
+        } else {
             ID += NullValue;
         }
         String date = newsArticleData.getPublishedAt();
-        if(null != date){
+        if (null != date) {
             ID += date.length();
-        }else {
+        } else {
             ID += NullValue;
         }
         Source source = newsArticleData.getSource();
-        if(null != source){
+        if (null != source) {
             String name = source.getName();
-            if(null != name){
+            if (null != name) {
                 ID += name.length();
-            }else {
+            } else {
                 ID += NullValue;
             }
             String id = source.getId();
-            if(null != id){
+            if (null != id) {
                 ID += id.length();
-            }else {
+            } else {
                 ID += NullValue;
             }
         }

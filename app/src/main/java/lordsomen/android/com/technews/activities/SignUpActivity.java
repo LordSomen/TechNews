@@ -40,8 +40,7 @@ public class SignUpActivity extends AppCompatActivity {
     public static final String EMAIL_KEY = "email-key";
     public static final String PHONE_KEY = "phone-key";
     public static final String IMAGE_URL_KEY = "image-url-key";
-
-
+    public static GoogleApiClient mGoogleApiClient;
     @BindView(R.id.email_signup)
     EditText inputEmail;
     @BindView(R.id.password_signup)
@@ -54,10 +53,8 @@ public class SignUpActivity extends AppCompatActivity {
     Button btnLogin;
     @BindView(R.id.google_signIn_button_signup)
     SignInButton signInButton;
-
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
-    public static GoogleApiClient mGoogleApiClient;
     private String name;
     private String imageUrl;
     private String email;
@@ -95,19 +92,19 @@ public class SignUpActivity extends AppCompatActivity {
                 String password = inputPassword.getText().toString().trim();
 
                 if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(getApplicationContext(), "Enter email address!"
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.enter_email_toast)
                             , Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (TextUtils.isEmpty(password)) {
-                    Toast.makeText(getApplicationContext(), "Enter password!"
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.enter_password)
                             , Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (password.length() < 6) {
-                    Toast.makeText(getApplicationContext(), "Password too short, enter minimum 6 characters!"
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.password_short_message)
                             , Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -118,12 +115,12 @@ public class SignUpActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 Toast.makeText(SignUpActivity.this,
-                                        "createUserWithEmail:onComplete:" + task.isSuccessful()
+                                        getString(R.string.create_user) + task.isSuccessful()
                                         , Toast.LENGTH_SHORT).show();
                                 progressBar.setVisibility(View.GONE);
                                 if (!task.isSuccessful()) {
                                     Toast.makeText(SignUpActivity.this,
-                                            "Authentication failed." + task.getException(),
+                                            getString(R.string.authentication_failed) + task.getException(),
                                             Toast.LENGTH_SHORT).show();
                                 } else {
                                     startActivity(new Intent(SignUpActivity.this
@@ -184,7 +181,7 @@ public class SignUpActivity extends AppCompatActivity {
                 firebaseAuthWithGoogle(account);
             } else {
                 // Google Sign In failed, update UI appropriately
-                Toast.makeText(this, "Unsucessful login", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.unsuccessful_login, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -223,7 +220,7 @@ public class SignUpActivity extends AppCompatActivity {
                         // signed in User can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInWithCredential", task.getException());
-                            Toast.makeText(SignUpActivity.this, "Authentication failed.",
+                            Toast.makeText(SignUpActivity.this, R.string.authentication,
                                     Toast.LENGTH_SHORT).show();
                         }
                     }

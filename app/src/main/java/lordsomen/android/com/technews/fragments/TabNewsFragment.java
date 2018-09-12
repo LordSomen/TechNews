@@ -2,9 +2,13 @@ package lordsomen.android.com.technews.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,8 +17,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -35,17 +41,10 @@ import static android.support.constraint.Constraints.TAG;
 
 public class TabNewsFragment extends Fragment implements NewsArticleAdapter.NewsOnClickItemHandler {
 
-    public static  final String QUERY = "query" ;
+    public static final String QUERY = "query";
     public static final String SOURCE = "source";
-    public static final String API_KEY = "b5d42bd3009c4988bc08b6d78854717f";
     public static final String NEWS_ARTICLE_DATA = "newsArticleIntentData";
-
-    private ApiInterface mApiInterface;
-    private String mNewsQuery;
-    private String mNewsSource;
-    private List<NewsArticleData> mNewsArticleDataList;
-    private NewsArticleAdapter mNewsArticleAdapter;
-
+    private static final String SAVED_LAYOUT_MANAGER = "layout-manager-state";
     @BindView(R.id.tabNews_framelayout_everything)
     FrameLayout mFrameLayoutEverything;
     @BindView(R.id.tab_news_rv_everything)
@@ -56,16 +55,23 @@ public class TabNewsFragment extends Fragment implements NewsArticleAdapter.News
     ProgressBar mProgressBarEverything;
     @BindView(R.id.tab_news_reload_button_everything)
     Button mRelaodEverything;
+    private ApiInterface mApiInterface;
+    private String mNewsQuery;
+    private String mNewsSource;
+    private List<NewsArticleData> mNewsArticleDataList;
+    private NewsArticleAdapter mNewsArticleAdapter;
+    private Parcelable onSavedInstanceState;
 
-    public TabNewsFragment(){}
+    public TabNewsFragment() {
+    }
 
-    public static TabNewsFragment init(String source,String query) {
+    public static TabNewsFragment init(String source, String query) {
         TabNewsFragment tabNewsFragment = new TabNewsFragment();
 
         Bundle args = new Bundle();
 
-        args.putString(QUERY,query);
-        args.putString(SOURCE,source);
+        args.putString(QUERY, query);
+        args.putString(SOURCE, source);
         tabNewsFragment.setArguments(args);
         return tabNewsFragment;
     }
@@ -73,7 +79,7 @@ public class TabNewsFragment extends Fragment implements NewsArticleAdapter.News
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(null != getArguments()){
+        if (null != getArguments()) {
             mNewsSource = getArguments().getString(SOURCE);
             mNewsQuery = getArguments().getString(QUERY);
         }
@@ -83,15 +89,18 @@ public class TabNewsFragment extends Fragment implements NewsArticleAdapter.News
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tab_news,container,false);
-        ButterKnife.bind(this,view);
+        View view = inflater.inflate(R.layout.fragment_tab_news, container, false);
+        ButterKnife.bind(this, view);
         mApiInterface = ApiClient.getApiClientTopHeadlines().create(ApiInterface.class);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext(),
-                LinearLayoutManager.VERTICAL,false);
-        mNewsArticleAdapter = new NewsArticleAdapter(getActivity().getApplicationContext(),this);
+                LinearLayoutManager.VERTICAL, false);
+        mNewsArticleAdapter = new NewsArticleAdapter(getActivity().getApplicationContext(), this);
         mRecyclerViewEverything.setLayoutManager(linearLayoutManager);
         mRecyclerViewEverything.setAdapter(mNewsArticleAdapter);
+        if (savedInstanceState != null) {
+            onSavedInstanceState = savedInstanceState.getParcelable(SAVED_LAYOUT_MANAGER);
+        }
         loadData();
         mRelaodEverything.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,7 +112,8 @@ public class TabNewsFragment extends Fragment implements NewsArticleAdapter.News
     }
 
     public void loadData() {
-        final Call<ApiData> listCall = mApiInterface.getAllChannelData(mNewsSource,mNewsQuery,API_KEY);
+        final Call<ApiData> listCall = mApiInterface.getAllChannelData(mNewsSource, mNewsQuery,
+                getResources().getString(R.string.API_KEY));
         // now binding the data in the pojo class
         mProgressBarEverything.setVisibility(View.VISIBLE);
 
@@ -119,14 +129,15 @@ public class TabNewsFragment extends Fragment implements NewsArticleAdapter.News
                     if (null != mNewsArticleDataList) {
                         showNewsEverythingList();
                         mNewsArticleAdapter.setNewsArticleData(mNewsArticleDataList);
-//                    if (onSavedInstanceState != null) {
-//                        mRecyclerView.getLayoutManager().onRestoreInstanceState(onSavedInstanceState);
-//                    }
+                        if (onSavedInstanceState != null) {
+                            mRecyclerViewEverything.getLayoutManager().onRestoreInstanceState(onSavedInstanceState);
+                        }
                     } else {
                         showErrorEverything();
                     }
                 }
             }
+
             //if data binding is not successful onFailed called
             @Override
             public void onFailure(Call<ApiData> call, Throwable t) {
@@ -150,13 +161,29 @@ public class TabNewsFragment extends Fragment implements NewsArticleAdapter.News
     }
 
     @Override
-    public void onClickItem(NewsArticleData newsArticleData) {
+    public void onClickItem(NewsArticleData newsArticleData, ImageView mImage, TextView mTitle) {
+
         Intent newsIntent = new Intent(getActivity().getApplicationContext(),
                 NewsDetailsActivity.class);
+        newsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Bundle mBundle = new Bundle();
         mBundle.putParcelable(NEWS_ARTICLE_DATA, newsArticleData);
         newsIntent.putExtras(mBundle);
-        startActivity(newsIntent);
+        ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                getActivity(),
+                new Pair<View, String>(mImage,
+                        NewsDetailsActivity.VIEW_NAME_HEADER_IMAGE),
+                new Pair<View, String>(mTitle,
+                        NewsDetailsActivity.VIEW_NAME_HEADER_TITLE));
+
+        ActivityCompat.startActivity(getActivity(), newsIntent, activityOptions.toBundle());
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(SAVED_LAYOUT_MANAGER, mRecyclerViewEverything.getLayoutManager()
+                .onSaveInstanceState());
     }
 
 }

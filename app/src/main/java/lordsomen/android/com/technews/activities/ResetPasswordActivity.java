@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import lordsomen.android.com.technews.R;
 
 public class ResetPasswordActivity extends AppCompatActivity {
@@ -35,7 +36,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         auth = FirebaseAuth.getInstance();
         setContentView(R.layout.activity_reset_password);
-
+        ButterKnife.bind(this);
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,7 +52,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
                 String email = inputEmail.getText().toString().trim();
 
                 if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(getApplication(), "Enter your registered email id", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplication(), R.string.enter_registered_email, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -62,11 +63,11 @@ public class ResetPasswordActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(ResetPasswordActivity.this,
-                                            "We have sent you instructions to reset your password!"
+                                            R.string.reset_instructions
                                             , Toast.LENGTH_SHORT).show();
                                 } else {
                                     Toast.makeText(ResetPasswordActivity.this,
-                                            "Failed to send reset email!",
+                                            R.string.failed_send_mail,
                                             Toast.LENGTH_SHORT).show();
                                 }
 
