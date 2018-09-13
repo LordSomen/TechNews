@@ -82,13 +82,13 @@ public class LoginActivity extends AppCompatActivity {
                 final String password = inputPassword.getText().toString();
 
                 if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(getApplicationContext(), "Enter email address!",
+                    Toast.makeText(getApplicationContext(), R.string.enter_email_toast,
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (TextUtils.isEmpty(password)) {
-                    Toast.makeText(getApplicationContext(), "Enter password!",
+                    Toast.makeText(getApplicationContext(), R.string.enter_password,
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -108,17 +108,15 @@ public class LoginActivity extends AppCompatActivity {
                                         if (!task.isSuccessful()) {
                                             // there was an error
                                             if (password.length() < 6) {
-                                                inputPassword.setError("Password is too small");
+                                                inputPassword.setError(getResources().
+                                                        getString(R.string.password_short_message));
                                             } else {
                                                 Toast.makeText(LoginActivity.this,
-                                                        "Authentication Failed", Toast.LENGTH_LONG).show();
+                                                        R.string.authentication_failed, Toast.LENGTH_LONG).show();
                                             }
                                         } else {
                                             Intent intent = new Intent(LoginActivity.this,
                                                     MainNewsActivity.class);
-//                                            Bundle bundle = new Bundle();
-//                                            bundle.putString(LOGIN_EMAIL, email);
-//                                            intent.putExtras(bundle);
                                             startActivity(intent);
                                             finish();
                                         }

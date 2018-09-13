@@ -13,7 +13,8 @@
     <string name="widget_image_view">this is the image of the widget\'s list item shown</string>
 
     <!--TODO put your api key here-->
-    <string name="API_KEY">c19ecc2526e943afa2b2ee7011ada5f0</string>
+    <string name="API_KEY">PUT YOUR API KEY HERE</string>
+
     <string name="bookmarks">Bookmarks</string>
     <string name="log_out">Log Out</string>
     <string name="top_headlines">Top Headlines</string>
